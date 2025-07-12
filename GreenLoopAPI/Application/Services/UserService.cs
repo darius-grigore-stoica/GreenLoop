@@ -5,37 +5,30 @@ using GreenLoopAPI.Core.Interfaces;
 
 namespace GreenLoopAPI.Application.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-    
     public async Task<UserDTO?> GetByUsernameAsync(string username)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var user = await userRepository.GetByUsernameAsync(username);
         return new UserDTO(user.Email, user.Username);
     }
 
     public async Task<UserDTO?> GetByEmailAsync(string email)
     {
-        var user = await _userRepository.GetByEmailAsync(email);
+        var user = await userRepository.GetByEmailAsync(email);
         return new UserDTO(user.Email, user.Username);
     }
 
     public async Task<UserDTO?> RegisterAsync(string email, string username, string password)
     {
         User u = new User(email, username, password);
-        var user = await _userRepository.RegisterAsync(u, password);
+        var user = await userRepository.RegisterAsync(u, password);
         return new UserDTO(user.Email, user.Username);
     }
 
     public async Task<UserDTO?> LoginAsync(string email, string password)
     {
-        var user = await _userRepository.LoginAsync(email, password);
+        var user = await userRepository.LoginAsync(email, password);
         return new UserDTO(user.Email, user.Username);
     }
 }
