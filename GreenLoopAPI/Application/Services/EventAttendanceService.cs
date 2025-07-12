@@ -9,7 +9,7 @@ public class EventAttendanceService(
     IEventRepository eventRepository,
     IUserRepository userRepository,
     IEventAttendanceRepository eventAttendanceRepository)
-    : IEventAttandanceService
+    : IEventAttendanceService
 {
     private readonly IEventRepository _eventRepository = eventRepository;
     private readonly IUserRepository _userRepository = userRepository;
