@@ -8,5 +8,5 @@ public interface IEventService
     
     Task<Event?> GetEventByIdAsync(int id);
     
-    void CreateEventAsync(Event newEvent);
+    Task<Boolean> CreateEventAsync(Event newEvent);
 }

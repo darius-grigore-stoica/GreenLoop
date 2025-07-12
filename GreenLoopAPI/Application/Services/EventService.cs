@@ -19,8 +19,15 @@ public class EventService(IEventRepository eventRepository) : IEventService
         return e;
     }
 
-    public async void CreateEventAsync(Event newEvent)
+    public async Task<Boolean> CreateEventAsync(Event newEvent)
     {
-        await _eventRepository.AddAsync(newEvent);
+        try
+        {
+            await _eventRepository.AddAsync(newEvent);
+            return true;
+        } catch(Exception e)
+        {
+            return false;
+        }
     }
 }

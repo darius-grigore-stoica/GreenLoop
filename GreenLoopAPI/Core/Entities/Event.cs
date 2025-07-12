@@ -11,4 +11,15 @@ public class Event
 
     public int CreatorId { get; set; }
     public User Creator { get; set; } = null!;
+
+    public Event(string title, string description, DateTime dateTime, string location, EventCategory category,
+        User creator)
+    {
+        Title = title;
+        Description = description;
+        DateTime = dateTime;
+        Location = location;
+        Category = category;
+        Creator = creator;
+    }
 }

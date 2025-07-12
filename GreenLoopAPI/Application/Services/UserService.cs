@@ -2,6 +2,11 @@
 using GreenLoopAPI.Application.Interfaces;
 using GreenLoopAPI.Core.Entities;
 using GreenLoopAPI.Core.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace GreenLoopAPI.Application.Services;
 
