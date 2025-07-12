@@ -10,4 +10,5 @@ public interface IUserService
     public Task<UserDTO?> GetByEmailAsync(string email);
     public Task<UserDTO?> RegisterAsync(string email, string username, string password);
     public Task<UserDTO?> LoginAsync(string email, string password);
+    Task<Boolean> Logout(int userId);
 }

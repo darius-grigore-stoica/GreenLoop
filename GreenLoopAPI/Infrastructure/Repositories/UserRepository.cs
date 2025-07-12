@@ -59,4 +59,9 @@ public class UserRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<bool> Logout(int userId)
+    {
+        throw new NotImplementedException();
+    }
 }

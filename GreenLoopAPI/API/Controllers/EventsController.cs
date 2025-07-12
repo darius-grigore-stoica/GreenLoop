@@ -27,6 +27,7 @@ public class EventsController : ControllerBase
         return Ok(events);
     }
 
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetEventByIdAsync(int id)
     {
@@ -36,7 +37,7 @@ public class EventsController : ControllerBase
 
     
     [Authorize]
-    [HttpPost]
+    [HttpPost("creates")]
     public async Task<IActionResult> CreateEventAsync([FromBody] CreateEventRequest request)
     {
         var value = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value; // TODO: check it shouldn't be CLAIMS.Name
@@ -45,7 +46,8 @@ public class EventsController : ControllerBase
             int userId = int.Parse(value);
             var newEvent = new Event(request.Title, request.Description, request.StartDate, request.Location, request.Category, await _userRepository.GetByIdAsync(userId));
             await _eventService.CreateEventAsync(newEvent);
+            return Ok();
         }
-        return Ok();
+        return Unauthorized();
     }
 }
