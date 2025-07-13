@@ -5,5 +5,8 @@ namespace GreenLoopAPI.Application.Interfaces;
 
 public interface IAuthService
 {
-    public Task<AuthResult> AuthenticateAsync(string email, string password);
+    public Task<AuthResult> AuthenticateAsync(LoginDTO loginDto);
+    public Task<AuthResult?> LoginAsync(LoginDTO loginDto);
+
+    public Task<AuthResult?> RegisterAsync(RegisterDTO loginDto);
 }

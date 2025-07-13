@@ -1,16 +1,33 @@
 ﻿using GreenLoopAPI.Core.Entities;
 using GreenLoopAPI.Core.Interfaces;
+using GreenLoopAPI.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GreenLoopAPI.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    public Task<User> GetByIdAsync(int id)
+    protected readonly GreenLoopDbContext _context;
+    public UserRepository(GreenLoopDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public Task<IEnumerable<User>> GetAllAsync()
+    public async Task<User?> GetByUsernameAsync(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
+
+    public async Task<User?> GetByIdAsync(int id)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public Task<IEnumerable<User?>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
@@ -26,41 +43,6 @@ public class UserRepository : IUserRepository
     }
 
     public void Delete(User entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User?> RegisterAsync(User user, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User?> LoginAsync(string email, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User?> GetByEmailAsync(string email)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<User?> GetByUsernameAsync(string username)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> EmailExistsAsync(string email)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UsernameExistsAsync(string username)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> Logout(int userId)
     {
         throw new NotImplementedException();
     }
