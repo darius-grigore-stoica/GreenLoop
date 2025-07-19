@@ -8,10 +8,10 @@ public class Event
     public DateTime DateTime { get; set; }
     public string Location { get; set; } = null!;
     public EventCategory Category { get; set; }
-
     public int CreatorId { get; set; }
     public User Creator { get; set; } = null!;
 
+    public Event() { }
     public Event(string title, string description, DateTime dateTime, string location, EventCategory category,
         User creator)
     {

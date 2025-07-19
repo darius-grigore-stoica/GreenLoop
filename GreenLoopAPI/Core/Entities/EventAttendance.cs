@@ -6,6 +6,7 @@ public class EventAttendance
     public Event Event { get; set; } = null!;
     public User User { get; set; } = null!;
 
+    public EventAttendance() { }
     public EventAttendance(Event e, User u)
     {
         Event = e;

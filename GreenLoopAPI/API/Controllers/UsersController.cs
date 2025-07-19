@@ -9,7 +9,7 @@ namespace GreenLoopAPI.API.Controllers;
 [Route("api/[controller]")]
 public class UsersController(IUserService userService, IAuthService authService) : ControllerBase
 {
-    [HttpGet("{username}")]
+    [HttpGet("username/{username}")]
     public async Task<ActionResult<UserDTO>> GetByUsernameAsync(string username)
     {
         try
@@ -22,7 +22,7 @@ public class UsersController(IUserService userService, IAuthService authService)
         }
     }
     
-    [HttpGet("{email}")]
+    [HttpGet("email/{email}")]
     public async Task<ActionResult<UserDTO>> GetByEmailAsync(string email)
     {
         try

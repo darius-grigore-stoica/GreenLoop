@@ -4,8 +4,11 @@ using GreenLoopAPI.Core.Interfaces;
 
 namespace GreenLoopAPI.Application.Services;
 
-public class UserService(IUserRepository _userRepository, ILogger<AuthService> _logger) : IUserService
+public class UserService(IUserRepository userRepository, ILogger<AuthService> logger) : IUserService
 {
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly ILogger<AuthService> _logger = logger;
+    
     public async Task<UserDTO?> GetByUsernameAsync(string username)
     {
         try {
