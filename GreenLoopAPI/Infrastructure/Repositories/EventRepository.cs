@@ -5,17 +5,17 @@ namespace GreenLoopAPI.Infrastructure.Repositories;
 
 public class EventRepository : IEventRepository
 {
-    public Task<Event> GetByIdAsync(int id)
+    public Task<Event?> GetByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Event>> GetAllAsync()
+    public Task<IEnumerable<Event?>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task AddAsync(Event entity)
+    public Task<Event?> AddAsync(Event entity)
     {
         throw new NotImplementedException();
     }

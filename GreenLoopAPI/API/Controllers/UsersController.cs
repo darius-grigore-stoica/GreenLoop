@@ -1,54 +1,69 @@
 ﻿using GreenLoopAPI.Application.DTOs;
 using GreenLoopAPI.Application.Interfaces;
 using GreenLoopAPI.Application.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace GreenLoopAPI.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(IUserService userService, IAuthService authService) : ControllerBase
 {
-    private readonly IUserService _userService;
-    private readonly IAuthService _authService;
-    
-    public UsersController(IUserService userService, AuthService authService)
-    {
-        _userService = userService;
-        _authService = authService;
-    }
-    
-    [HttpGet]
+    [HttpGet("{username}")]
     public async Task<ActionResult<UserDTO>> GetByUsernameAsync(string username)
     {
-        var user = await _userService.GetByUsernameAsync(username);
-        return Ok(user);
+        try
+        {
+            var user = await userService.GetByUsernameAsync(username);
+            return Ok(user);
+        } catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
-    [HttpGet]
+    [HttpGet("{email}")]
     public async Task<ActionResult<UserDTO>> GetByEmailAsync(string email)
     {
-        var user = await _userService.GetByEmailAsync(email);
-        return Ok(user);
+        try
+        {
+            var user = await userService.GetByEmailAsync(email);
+            return Ok(user);
+        } catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<UserDTO>> RegisterAsync([FromBody] RegisterDTO registerDto)
+    public async Task<ActionResult<AuthResult>> RegisterAsync([FromBody] RegisterDTO registerDto)
     {
-        var user = await _authService.RegisterAsync(registerDto);
-        return Ok(user);
+        try
+        {
+            var auth = await authService.RegisterAsync(registerDto);
+            if (auth is { Success: false })
+                return BadRequest(auth.Message);
+            return Ok(auth);
+        } catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<UserDTO>> LoginAsync([FromBody] LoginDTO loginDto)
     {
-        var result = await _authService.AuthenticateAsync(loginDto);
+        try
+        {
+            var result = await authService.AuthenticateAsync(loginDto);
 
-        if (!result.Success)
-            return Unauthorized(result.Message);
+            if (!result.Success)
+                return Unauthorized(result.Message);
 
-        return Ok(new { token = result.Token });
+            return Ok(new { token = result.Token });
+        } catch(Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

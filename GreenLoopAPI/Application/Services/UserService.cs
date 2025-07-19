@@ -1,26 +1,49 @@
 ﻿using GreenLoopAPI.Application.DTOs;
 using GreenLoopAPI.Application.Interfaces;
-using GreenLoopAPI.Core.Entities;
 using GreenLoopAPI.Core.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-
 
 namespace GreenLoopAPI.Application.Services;
 
-public class UserService(IUserRepository _userRepository) : IUserService
+public class UserService(IUserRepository _userRepository, ILogger<AuthService> _logger) : IUserService
 {
     public async Task<UserDTO?> GetByUsernameAsync(string username)
     {
-        var user = await _userRepository.GetByUsernameAsync(username);
-        return new UserDTO(user.Email, user.Username);
-    }
+        try {
+            _logger.LogInformation("Getting user by username");
+            var user = await _userRepository.GetByUsernameAsync(username);
+            if (user == null)
+            {
+                _logger.LogInformation("User not found");
+                throw new Exception("User not found");
+            }
+
+            _logger.LogInformation("User found");
+            return new UserDTO(user.Email, user.Username);
+        }
+        catch (Exception e) {
+            _logger.LogError(e, "Error getting user by username");
+            return null;
+        }
+}
 
     public async Task<UserDTO?> GetByEmailAsync(string email)
     {
-        var user = await _userRepository.GetByEmailAsync(email);
-        return new UserDTO(user.Email, user.Username);
+        try
+        {
+            _logger.LogInformation("Getting user by email");
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogInformation("User not found");
+                throw new Exception("User not found");
+            }
+
+            _logger.LogInformation("User found");
+            return new UserDTO(user.Email, user.Username);
+        } catch(Exception e)
+        {
+            _logger.LogError(e, "Error getting user by email");
+            return null;
+        }
     }
 }

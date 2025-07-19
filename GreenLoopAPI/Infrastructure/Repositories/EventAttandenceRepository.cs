@@ -10,12 +10,12 @@ public class EventAttandenceRepository : IEventAttendanceRepository
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<EventAttendance>> GetAllAsync()
+    public Task<IEnumerable<EventAttendance?>> GetAllAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task AddAsync(EventAttendance entity)
+    public Task<EventAttendance?> AddAsync(EventAttendance entity)
     {
         throw new NotImplementedException();
     }
