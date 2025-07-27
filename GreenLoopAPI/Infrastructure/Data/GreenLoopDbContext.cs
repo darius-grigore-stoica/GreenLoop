@@ -1,12 +1,12 @@
-﻿using GreenLoopAPI.Core.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using GreenLoopAPI.Core.Entities;
 
 namespace GreenLoopAPI.Infrastructure.Data;
 
 public class GreenLoopDbContext : DbContext
 {
-    public GreenLoopDbContext(DbContextOptions<GreenLoopDbContext> options) : base(options) {}
-    public DbSet<User> Users { get; set; }
     public DbSet<Event> Events { get; set; }
-    public DbSet<EventAttendance> EventAttendances { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    public GreenLoopDbContext(DbContextOptions<GreenLoopDbContext> options) : base(options) { }
 }

@@ -1,4 +1,6 @@
-﻿namespace GreenLoopAPI.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GreenLoopAPI.Core.Entities;
 
 public class Event
 {
@@ -8,12 +10,13 @@ public class Event
     public DateTime DateTime { get; set; }
     public string Location { get; set; } = null!;
     public EventCategory Category { get; set; }
-    public int CreatorId { get; set; }
-    public User Creator { get; set; } = null!;
+    public User? Creator { get; set; } = null!;
+    
+    public ICollection<User> Attendees { get; set; } = new List<User>(); 
 
     public Event() { }
     public Event(string title, string description, DateTime dateTime, string location, EventCategory category,
-        User creator)
+        User? creator)
     {
         Title = title;
         Description = description;

@@ -2,13 +2,13 @@
 using GreenLoopAPI.Core.Entities;
 using GreenLoopAPI.Core.Interfaces;
 using GreenLoopAPI.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 
 namespace GreenLoopAPI.Infrastructure.Repositories;
 
-public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> logger) : IUserRepository
+public class UserRepository(IMongoCollection<User> users, ILogger<AuthService> logger) : IUserRepository
 {
-    protected readonly GreenLoopDbContext _context = context;
+    private readonly IMongoCollection<User> _users = users;
     protected readonly ILogger<AuthService> _logger = logger;
 
     public async Task<User?> GetByEmailAsync(string email)
@@ -16,7 +16,7 @@ public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> log
         try
         {
             _logger.LogInformation("Getting user by {email}", email);
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _users.Find(u => u.Email == email).FirstOrDefaultAsync();
         } catch(Exception e)
         {
             _logger.LogError(e, "Error getting user by email");
@@ -29,7 +29,7 @@ public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> log
         try
         {
             _logger.LogInformation("Getting user by {username}", username);
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return await _users.Find(u => u.Username == username).FirstOrDefaultAsync();
         } catch(Exception e)
         {
             _logger.LogError(e, "Error getting user by username");
@@ -42,7 +42,7 @@ public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> log
         try
         {
             _logger.LogInformation("Getting user by {id}", id);
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _users.Find(u => u.Id == id).FirstOrDefaultAsync();
         } catch(Exception e)
         {
             _logger.LogError(e, "Error getting user by id");
@@ -52,7 +52,17 @@ public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> log
 
     public Task<IEnumerable<User?>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            _logger.LogInformation("Getting all users");
+            IEnumerable<User?> users = _users.Find(u => true).ToList();
+            _logger.LogInformation("Users retrieved");
+            return Task.FromResult(users);
+        } catch(Exception e)
+        {
+            _logger.LogError(e, "Error getting all users");
+            return null;
+        }
     }
 
     public async Task<User?> AddAsync(User entity)
@@ -60,8 +70,7 @@ public class UserRepository(GreenLoopDbContext context, ILogger<AuthService> log
         try
         {
             _logger.LogInformation("Adding user");
-            await _context.Users.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await _users.InsertOneAsync(entity);
             _logger.LogInformation("User added");
             return entity;
         }

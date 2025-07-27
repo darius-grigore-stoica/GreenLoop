@@ -2,12 +2,13 @@
 using GreenLoopAPI.Core.Entities;
 using GreenLoopAPI.Core.Interfaces;
 using GreenLoopAPI.Infrastructure.Data;
+using MongoDB.Driver;
 
 namespace GreenLoopAPI.Infrastructure.Repositories;
 
-public class EventRepository(GreenLoopDbContext context, ILogger<AuthService> logger) : IEventRepository
+public class EventRepository(IMongoCollection<Event> events, ILogger<AuthService> logger) : IEventRepository
 {
-    protected readonly GreenLoopDbContext _context = context;
+    protected readonly IMongoCollection<Event> _context = events;
     protected readonly ILogger<AuthService> _logger = logger;
     public Task<Event?> GetByIdAsync(int id)
     {
@@ -19,7 +20,7 @@ public class EventRepository(GreenLoopDbContext context, ILogger<AuthService> lo
         try
         {
             _logger.LogInformation("Getting all events");
-            IEnumerable<Event?> events = _context.Events;
+            IEnumerable<Event?> events = _context.Find(e => true).ToList();
             _logger.LogInformation("Events retrieved");
             return Task.FromResult(events);
         }

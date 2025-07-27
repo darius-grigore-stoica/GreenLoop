@@ -4,13 +4,11 @@ namespace GreenLoopAPI.Application.DTOs;
 
 public class CreateEventRequest
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = null!;
+    public string Description { get; set; } = null!;
     public DateTime StartDate { get; set; }
-    
-    public String Location { get; set; }
-    
+    public string Location { get; set; } = null!;
     public EventCategory Category { get; set; }
     
-    public int OrganizerId { get; set; }
+    
 }
