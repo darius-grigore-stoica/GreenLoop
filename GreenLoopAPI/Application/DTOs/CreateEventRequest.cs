@@ -6,9 +6,10 @@ public class CreateEventRequest
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
-    public DateTime StartDate { get; set; }
+    public DateTime DateTime { get; set; }
     public string Location { get; set; } = null!;
-    public EventCategory Category { get; set; }
+    public String Category { get; set; } = new EventCategory().ToString(); // TODO: fix the json string - event category mapping
+    public int CreatorId { get; set; }
     
     
 }

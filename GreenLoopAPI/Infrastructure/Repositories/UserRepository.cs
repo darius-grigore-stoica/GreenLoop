@@ -50,7 +50,7 @@ public class UserRepository(IMongoCollection<User> users, ILogger<UserRepository
         }
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<IEnumerable<User?>> GetAllAsync()
     {
         try
         {
@@ -80,62 +80,13 @@ public class UserRepository(IMongoCollection<User> users, ILogger<UserRepository
         }
     }
 
-    public async Task<User?> UpdateAsync(User entity)
+    public Task<User?> UpdateAsync(User entity)
     {
-        try
-        {
-            _logger.LogInformation("Updating user with ID: {Id}", entity.Id);
-            var result = await _users.ReplaceOneAsync(u => u.Id == entity.Id, entity);
-            
-            if (result.ModifiedCount > 0)
-            {
-                _logger.LogInformation("User updated successfully with ID: {Id}", entity.Id);
-                return entity;
-            }
-            
-            _logger.LogWarning("No user found to update with ID: {Id}", entity.Id);
-            return null;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error updating user with ID: {Id}", entity?.Id);
-            return null;
-        }
+        throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public Task<User?> DeleteAsync(User entity)
     {
-        try
-        {
-            _logger.LogInformation("Deleting user with ID: {Id}", id);
-            var result = await _users.DeleteOneAsync(u => u.Id == id);
-            
-            if (result.DeletedCount > 0)
-            {
-                _logger.LogInformation("User deleted successfully with ID: {Id}", id);
-                return true;
-            }
-            
-            _logger.LogWarning("No user found to delete with ID: {Id}", id);
-            return false;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error deleting user with ID: {Id}", id);
-            return false;
-        }
-    }
-
-    public void Update(User entity)
-    {
-        UpdateAsync(entity).GetAwaiter().GetResult();
-    }
-
-    public void Delete(User entity)
-    {
-        if (entity?.Id != null)
-        {
-            DeleteAsync(entity.Id).GetAwaiter().GetResult();
-        }
+        throw new NotImplementedException();
     }
 }

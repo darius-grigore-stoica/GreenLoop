@@ -6,8 +6,8 @@ namespace GreenLoopAPI.Application.Services;
 
 public class UserService(IUserRepository userRepository, ILogger<AuthService> logger) : IUserService
 {
-    private readonly IUserRepository _userRepository = userRepository;
-    private readonly ILogger<AuthService> _logger = logger;
+    protected readonly IUserRepository _userRepository = userRepository;
+    protected readonly ILogger<AuthService> _logger = logger;
     
     public async Task<UserDTO?> GetByUsernameAsync(string username)
     {

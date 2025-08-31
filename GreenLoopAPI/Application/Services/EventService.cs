@@ -6,8 +6,8 @@ namespace GreenLoopAPI.Application.Services;
 
 public class EventService(IEventRepository eventRepository, ILogger<Event> logger) : IEventService
 {
-    private readonly IEventRepository _eventRepository = eventRepository;
-    private readonly ILogger<Event> _logger = logger;
+    protected readonly IEventRepository _eventRepository = eventRepository;
+    protected readonly ILogger<Event> _logger = logger;
     public async Task<IEnumerable<Event>?> GetAllEventsAsync()
     {
         try
