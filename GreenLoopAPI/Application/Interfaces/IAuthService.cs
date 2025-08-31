@@ -9,4 +9,6 @@ public interface IAuthService
     public Task<AuthResult?> LoginAsync(LoginDTO loginDto);
 
     public Task<AuthResult?> RegisterAsync(RegisterDTO loginDto);
+    public string HashPassword(string password);
+    public bool VerifyPassword(string password, string hashedPassword);
 }

@@ -25,12 +25,13 @@ public class AuthService : IAuthService
         {
             _logger.LogInformation("Authenticating user with email {loginDtO.Email} starting...", loginDto.Email);
             var user = await _userRepository.GetByEmailAsync(loginDto.Email);
-            _logger.LogInformation("User authenticated");
-            if (user == null || user.PasswordHash != loginDto.Password)
+            
+            if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
             {
                 _logger.LogInformation("Invalid credentials");
                 return new AuthResult(false, "", "Invalid credentials");
             }
+            _logger.LogInformation("User authenticated");
 
             _logger.LogInformation("Generating token...");
             var token = _jwtTokenGenerator.GenerateToken(user);
@@ -73,7 +74,7 @@ public class AuthService : IAuthService
         try
         {
             _logger.LogInformation("Registering user with email {registerDto.Email} starting...", registerDto.Email);
-            var user = _userRepository.GetByEmailAsync(registerDto.Email);
+            var user = await _userRepository.GetByEmailAsync(registerDto.Email);
             if (user != null)
             {
                 _logger.LogInformation("User already exists");
@@ -81,11 +82,17 @@ public class AuthService : IAuthService
             }
 
             _logger.LogInformation("Hashing password...");
-            var passwordHash = PasswordHash(registerDto.Password);
-
+            var passwordHash = HashPassword(registerDto.Password);
+            
             _logger.LogInformation("Creating user...");
             var newUser = new User(registerDto.Email, passwordHash, registerDto.Username);
-
+            
+            if (newUser.Id <= 0)
+            {
+                newUser.Id = GetNextUserIdAsync();
+                _logger.LogInformation("Generated new ID for user: {Id}", newUser.Id);
+            }
+            
             _logger.LogInformation("Adding user to database...");
             await _userRepository.AddAsync(newUser);
 
@@ -99,9 +106,45 @@ public class AuthService : IAuthService
             return new AuthResult(false, "", "Error registering user");
         }
     }
-
-    public string PasswordHash(string password)
+    private int GetNextUserIdAsync()
     {
-        return BCrypt.Net.BCrypt.HashPassword(password);
+        try
+        {
+            var maxId = 0;
+            using (var enumerator =  _userRepository.GetAllAsync().Result.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    var currentUser = enumerator.Current;
+                    if (currentUser != null && currentUser.Id > maxId)
+                    {
+                        maxId = currentUser.Id;
+                    }
+                }
+            }
+            return maxId + 1;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error generating next user ID, using timestamp fallback");
+            return (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() % int.MaxValue);
+        }
+    }
+    
+    public string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password, 12);
+    }
+
+    public bool VerifyPassword(string password, string hashedPassword)
+    {
+        try
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
